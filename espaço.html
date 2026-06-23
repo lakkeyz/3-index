@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel Estelar</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+  
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    background: radial-gradient(circle at center, #0a0f1c 0%, #050811 100%);
+    color: #0ff;
+    font-family: 'Orbitron', monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    transition: background 0.1s;
+  }
+
+  .painel {
+    background: rgba(5, 15, 30, 0.8);
+    border: 2px solid #0ff;
+    padding: 40px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 0 30px #0ff, inset 0 0 20px rgba(0, 255, 255, 0.2);
+    transition: all 0.3s;
+  }
+
+  .painel.shield-on {
+    box-shadow: 0 0 50px #0ff, 0 0 80px #0ff, inset 0 0 30px rgba(0, 255, 255, 0.4);
+    border-color: #0ff;
+  }
+
+  h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    text-shadow: 0 0 15px #0ff;
+    font-size: 1.8rem;
+  }
+
+  .fuel-label { margin-bottom: 8px; font-size: 0.9rem; }
+  
+  .fuel-bar {
+    background: #111;
+    border: 1px solid #0ff;
+    height: 24px;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 30px;
+  }
+  
+  .fuel-fill {
+    height: 100%;
+    width: 70%;
+    background: linear-gradient(90deg, #0f0, #0ff, #0ff);
+    box-shadow: 0 0 20px #0f0;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
+  .buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 25px;
+  }
+
+  button {
+    background: #0a1a2a;
+    border: 1px solid #0ff;
+    color: #0ff;
+    padding: 14px;
+    font-family: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s;
+  }
+
+  button:hover:not(:disabled) {
+    background: rgba(0, 255, 255, 0.2);
+    box-shadow: 0 0 20px #0ff;
+    transform: translateY(-2px);
+  }
+
+  button.active {
+    background: #0f0;
+    color: #000;
+    border-color: #0f0;
+    box-shadow: 0 0 25px #0f0;
+  }
+
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  #status {
+    text-align: center;
+    font-size: 1.3rem;
+    min-height: 30px;
+    text-shadow: 0 0 10px currentColor;
+  }
+</style>
+</head>
+<body>
+
+<div class="painel" id="painel">
+  <h2>PAINEL DE COMANDO</h2>
+  
+  <div class="fuel-label">COMBUSTÍVEL</div>
+  <div class="fuel-bar"><div class="fuel-fill"></div></div>
+  
+  <div class="buttons">
+    <button id="btnMotor">MOTORES</button>
+    <button id="btnEscudo">ESCUDO</button>
+    <button id="btnHiper">HIPERESPAÇO</button>
+  </div>
+  
+  <div id="status">SISTEMA OFFLINE</div>
+</div>
+
+<script>
+const painel = document.getElementById('painel');
+const status = document.getElementById('status');
+const btnMotor = document.getElementById('btnMotor');
+const btnEscudo = document.getElementById('btnEscudo');
+const btnHiper = document.getElementById('btnHiper');
+
+btnMotor.addEventListener('click', () => {
+  status.textContent = 'MOTORES PRONTOS';
+  status.style.color = '#0f0';
+  btnMotor.classList.add('active');
+});
+
+btnEscudo.addEventListener('click', () => {
+  painel.classList.toggle('shield-on');
+  const on = painel.classList.contains('shield-on');
+  status.textContent = on ? 'ESCUDO ATIVADO' : 'ESCUDO DESATIVADO';
+  status.style.color = '#0ff';
+});
+
+btnHiper.addEventListener('click', () => {
+  let count = 3;
+  btnHiper.disabled = true;
+  status.style.color = '#ff0';
+  
+  const interval = setInterval(() => {
+    status.textContent = `SALTO EM ${count}...`;
+    count--;
+    
+    if (count < 0) {
+      clearInterval(interval);
+      document.body.style.background = '#fff';
+      status.textContent = 'NAVE EM HIPERESPAÇO!';
+      status.style.color = '#000';
+      
+      setTimeout(() => {
+        document.body.style.background = 'radial-gradient(circle at center, #0a0f1c 0%, #050811 100%)';
+        status.textContent = 'SALTO CONCLUÍDO';
+        status.style.color = '#0ff';
+        btnHiper.disabled = false;
+      }, 400);
+    }
+  }, 1000);
+});
+</script>
+</body>
+</html>

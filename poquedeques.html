@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pokédex</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    background: #1a1a2e;
+    color: #eee;
+    font-family: 'Segoe UI', sans-serif;
+    padding: 20px;
+  }
+
+  .container {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 25px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 768px) {
+    .container { grid-template-columns: 1fr; }
+  }
+
+  input {
+    width: 100%;
+    padding: 12px;
+    background: #2a2a4e;
+    border: 2px solid #444;
+    color: #fff;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    font-size: 1rem;
+  }
+
+  input:focus {
+    outline: none;
+    border-color: #e94560;
+  }
+
+  .lista {
+    background: #2a2a4e;
+    border-radius: 12px;
+    padding: 10px;
+    max-height: 500px;
+    overflow-y: auto;
+  }
+
+  .monstro {
+    padding: 14px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s;
+    margin-bottom: 5px;
+  }
+
+  .monstro:hover, .monstro.active {
+    background: #e94560;
+    transform: translateX(5px);
+  }
+
+  .detalhes {
+    background: #2a2a4e;
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+  }
+
+  .detalhes img {
+    width: 200px;
+    height: 200px;
+    image-rendering: pixelated;
+    margin-bottom: 20px;
+  }
+
+  .detalhes h2 {
+    color: #e94560;
+    margin-bottom: 10px;
+    font-size: 2rem;
+  }
+
+  .detalhes p {
+    color: #ccc;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div>
+    <input type="text" id="busca" placeholder="🔍 Buscar criatura...">
+    <div class="lista" id="lista"></div>
+  </div>
+  
+  <div class="detalhes">
+    <img id="img" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png" alt="">
+    <h2 id="nome">Pikachu</h2>
+    <p id="desc">Um Pokémon elétrico conhecido por seu ataque Choque do Trovão.</p>
+  </div>
+</div>
+
+<script>
+const monstros = [
+  { nome: 'Pikachu', id: '25', desc: 'Pokémon elétrico com alta velocidade e poder de choque.' },
+  { nome: 'Charmander', id: '4', desc: 'A chama na cauda indica sua força vital.' },
+  { nome: 'Bulbasaur', id: '1', desc: 'Carrega uma semente nas costas desde o nascimento.' },
+  { nome: 'Squirtle', id: '7', desc: 'Jorra jatos de água poderosos pelo casco.' },
+  { nome: 'Gengar', id: '94', desc: 'Pokémon fantasma que adora pregar peças.' },
+  { nome: 'Gyarados', id: '130', desc: 'Temível após evoluir, destrói tudo em seu caminho.' }
+];
+
+const lista = document.getElementById('lista');
+const busca = document.getElementById('busca');
+
+function renderizar(filtro = '') {
+  lista.innerHTML = '';
+  const filtrados = monstros.filter(m => 
+    m.nome.toLowerCase().includes(filtro.toLowerCase())
+  );
+  
+  filtrados.forEach((m, i) => {
+    const div = document.createElement('div');
+    div.className = 'monstro';
+    div.textContent = m.nome;
+    div.onclick = () => selecionar(m, div);
+    if (i === 0 && !filtro) div.classList.add('active');
+    lista.appendChild(div);
+  });
+}
+
+function selecionar(monstro, elemento) {
+  document.querySelectorAll('.monstro').forEach(m => m.classList.remove('active'));
+  elemento.classList.add('active');
+  
+  document.getElementById('img').src = 
+    `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${monstro.id}.png`;
+  document.getElementById('nome').textContent = monstro.nome;
+  document.getElementById('desc').textContent = monstro.desc;
+}
+
+busca.addEventListener('input', e => renderizar(e.target.value));
+renderizar();
+</script>
+</body>
+</html>
